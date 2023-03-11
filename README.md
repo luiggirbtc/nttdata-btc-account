@@ -1,0 +1,2 @@
+# nttdata-btc-account
+MicroServiceAccount
