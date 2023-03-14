@@ -18,6 +18,11 @@ public interface AccountService {
     Flux<AccountResponse> findAll();
 
     /**
+     * Method findAllByHolder.
+     */
+    Flux<AccountResponse> findAllByHolder(String id);
+
+    /**
      * Method findById.
      */
     Mono<AccountResponse> findById(String id);

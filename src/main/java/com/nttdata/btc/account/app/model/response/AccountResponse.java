@@ -4,10 +4,7 @@ import com.nttdata.btc.account.app.model.request.BaseRequest;
 
 import java.util.Date;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 /**
  * Class response ProductResponse.
@@ -16,6 +13,7 @@ import lombok.Setter;
  */
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 @Getter
 @Setter
 public class AccountResponse extends BaseRequest {

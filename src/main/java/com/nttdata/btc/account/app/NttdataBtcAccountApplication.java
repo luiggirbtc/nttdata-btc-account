@@ -9,5 +9,4 @@ public class NttdataBtcAccountApplication {
     public static void main(String[] args) {
         SpringApplication.run(NttdataBtcAccountApplication.class, args);
     }
-
 }

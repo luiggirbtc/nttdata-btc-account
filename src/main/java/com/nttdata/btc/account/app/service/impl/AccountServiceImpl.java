@@ -45,6 +45,19 @@ public class AccountServiceImpl implements AccountService {
     }
 
     /**
+     * This method return all accounts by holder.
+     *
+     * @return {@link List<AccountResponse>}
+     */
+    @Override
+    public Flux<AccountResponse> findAllByHolder(String id) {
+        return repository.findAll().filter(entity -> entity.getHolder_account().stream()
+                .anyMatch(s -> s.equalsIgnoreCase(id)))
+                .map(filtered -> buildAccountR.apply(filtered))
+                .onErrorReturn(new AccountResponse());
+    }
+
+    /**
      * This method find a account by id.
      *
      * @param id {@link String}

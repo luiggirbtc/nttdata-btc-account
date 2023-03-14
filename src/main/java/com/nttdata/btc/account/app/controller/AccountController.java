@@ -28,6 +28,18 @@ public class AccountController {
     private AccountService service;
 
     /**
+     * Service list all accounts by holder.
+     *
+     * @param id {@link String}
+     * @return {@link AccountResponse}
+     */
+    @GetMapping("holder/{id}")
+    public Flux<AccountResponse> findAllByHolder(@PathVariable final String id) {
+        log.info("Start findAllByHolder Accounts.");
+        return service.findAllByHolder(id).doOnNext(product -> log.info(product.toString()));
+    }
+
+    /**
      * Service find by id.
      *
      * @param id {@link String}
