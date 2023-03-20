@@ -1,0 +1,289 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+  - url: http://localhost:8085
+    description: Generated server url
+tags:
+  - name: Account
+    description: Service Account
+paths:
+  /api/v1/account/:
+    get:
+      tags:
+        - Account
+      summary: Get all accounts
+      operationId: findAll
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountResponse'
+        '400':
+          description: Bad Request
+        '500':
+          description: Internal Server Error
+    put:
+      tags:
+        - Account
+      summary: Update customer
+      operationId: updateProduct
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateAccountRequest'
+        required: true
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountResponse'
+        '400':
+          description: Bad Request
+        '500':
+          description: Internal Server Error
+    post:
+      tags:
+        - Account
+      summary: Create a new account
+      operationId: createAccount
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountRequest'
+        required: true
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountResponse'
+        '400':
+          description: Bad Request
+        '500':
+          description: Internal Server Error
+  /api/v1/account/id/{id}:
+    get:
+      tags:
+        - Account
+      summary: Get account by id
+      operationId: findById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountResponse'
+        '400':
+          description: Bad Request
+        '404':
+          description: Not found
+  /api/v1/account/holder/{id}:
+    get:
+      tags:
+        - Account
+      summary: Find accounts by holder
+      operationId: findAllByHolder
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountResponse'
+        '400':
+          description: Bad Request
+        '500':
+          description: Internal Server Error
+  /api/v1/account/{id}:
+    delete:
+      tags:
+        - Account
+      summary: Delete account
+      operationId: deleteAccount
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json: {}
+        '400':
+          description: Bad Request
+        '500':
+          description: Internal Server Error
+components:
+  schemas:
+    UpdateAccountRequest:
+      required:
+        - code_account
+        - id_account
+        - product
+      type: object
+      properties:
+        code_account:
+          type: string
+          description: Code account
+          example: 193-1853946-0-00
+        holder_account:
+          type: array
+          description: Holder account
+          example: '{640bf4a36bf23c1c772da9d6}'
+          items:
+            type: string
+            description: Holder account
+            example: '{640bf4a36bf23c1c772da9d6}'
+        authorized_signer:
+          type: array
+          description: authorized signer account
+          example: '{640ff25de14dbb2e4076ef56}'
+          items:
+            type: string
+            description: authorized signer account
+            example: '{640ff25de14dbb2e4076ef56}'
+        product:
+          type: string
+          description: Id Product
+          example: 640ff1744975f4147b986d45
+        balance:
+          type: number
+          description: Balance account
+          format: double
+          example: 250
+        transactions:
+          type: array
+          description: list transactions
+          example: '{640ff25de14dbb2e4076ef56}'
+          items:
+            type: string
+            description: list transactions
+            example: '{640ff25de14dbb2e4076ef56}'
+        id_account:
+          type: string
+          description: Id account
+          example: 120cf999662f294fc1234567
+    AccountResponse:
+      required:
+        - code_account
+        - id_account
+        - product
+      type: object
+      properties:
+        code_account:
+          type: string
+          description: Code account
+          example: 193-1853946-0-00
+        holder_account:
+          type: array
+          description: Holder account
+          example: '{640bf4a36bf23c1c772da9d6}'
+          items:
+            type: string
+            description: Holder account
+            example: '{640bf4a36bf23c1c772da9d6}'
+        authorized_signer:
+          type: array
+          description: authorized signer account
+          example: '{640ff25de14dbb2e4076ef56}'
+          items:
+            type: string
+            description: authorized signer account
+            example: '{640ff25de14dbb2e4076ef56}'
+        product:
+          type: string
+          description: Id Product
+          example: 640ff1744975f4147b986d45
+        balance:
+          type: number
+          description: Balance account
+          format: double
+          example: 250
+        transactions:
+          type: array
+          description: list transactions
+          example: '{640ff25de14dbb2e4076ef56}'
+          items:
+            type: string
+            description: list transactions
+            example: '{640ff25de14dbb2e4076ef56}'
+        id_account:
+          type: string
+          description: Id account
+          example: 640cc29c60650d1637e040a9
+        register_date:
+          type: string
+          description: Register date
+          format: date-time
+          example: '2023-03-11T21:58:49.101Z'
+        status:
+          type: boolean
+          description: Status account
+          example: true
+    AccountRequest:
+      required:
+        - code_account
+        - product
+      type: object
+      properties:
+        code_account:
+          type: string
+          description: Code account
+          example: 193-1853946-0-00
+        holder_account:
+          type: array
+          description: Holder account
+          example: '{640bf4a36bf23c1c772da9d6}'
+          items:
+            type: string
+            description: Holder account
+            example: '{640bf4a36bf23c1c772da9d6}'
+        authorized_signer:
+          type: array
+          description: authorized signer account
+          example: '{640ff25de14dbb2e4076ef56}'
+          items:
+            type: string
+            description: authorized signer account
+            example: '{640ff25de14dbb2e4076ef56}'
+        product:
+          type: string
+          description: Id Product
+          example: 640ff1744975f4147b986d45
+        balance:
+          type: number
+          description: Balance account
+          format: double
+          example: 250
+        transactions:
+          type: array
+          description: list transactions
+          example: '{640ff25de14dbb2e4076ef56}'
+          items:
+            type: string
+            description: list transactions
+            example: '{640ff25de14dbb2e4076ef56}'
