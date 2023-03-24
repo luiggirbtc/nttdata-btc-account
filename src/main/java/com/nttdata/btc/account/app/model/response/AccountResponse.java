@@ -5,7 +5,11 @@ import com.nttdata.btc.account.app.model.request.BaseRequest;
 import java.util.Date;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 /**
  * Class response ProductResponse.
