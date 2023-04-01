@@ -12,7 +12,9 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -41,7 +43,8 @@ public class AccountServiceImpl implements AccountService {
     public Flux<AccountResponse> findAll() {
         return repository.findAll().filter(Account::isStatus)
                 .map(c -> buildAccountR.apply(c))
-                .onErrorReturn(new AccountResponse());
+                .onErrorResume(e -> Flux.error(customException(HttpStatus.INTERNAL_SERVER_ERROR,
+                        HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase())));
     }
 
     /**
@@ -54,7 +57,8 @@ public class AccountServiceImpl implements AccountService {
         return repository.findAll().filter(entity -> entity.getHolder_account().stream()
                 .anyMatch(s -> s.equalsIgnoreCase(id)))
                 .map(filtered -> buildAccountR.apply(filtered))
-                .onErrorReturn(new AccountResponse());
+                .onErrorResume(e -> Mono.error(customException(HttpStatus.BAD_REQUEST,
+                        HttpStatus.BAD_REQUEST.getReasonPhrase())));
     }
 
     /**
@@ -68,7 +72,8 @@ public class AccountServiceImpl implements AccountService {
         return repository.findById(id)
                 .filter(Account::isStatus)
                 .map(e -> buildAccountR.apply(e))
-                .onErrorReturn(new AccountResponse());
+                .onErrorResume(e -> Mono.error(customException(HttpStatus.BAD_REQUEST,
+                        HttpStatus.BAD_REQUEST.getReasonPhrase())));
     }
 
     /**
@@ -81,7 +86,8 @@ public class AccountServiceImpl implements AccountService {
     public Mono<AccountResponse> save(AccountRequest request) {
         return repository.save(buildAccount.apply(request))
                 .flatMap(entity -> Mono.just(buildAccountR.apply(entity)))
-                .onErrorReturn(new AccountResponse());
+                .onErrorResume(e -> Mono.error(customException(HttpStatus.BAD_REQUEST,
+                        HttpStatus.BAD_REQUEST.getReasonPhrase())));
     }
 
     /**
@@ -94,7 +100,9 @@ public class AccountServiceImpl implements AccountService {
     public Mono<Void> delete(String id) {
         return repository.findById(id).filter(Account::isStatus)
                 .map(e -> updateStatus.apply(e, DEFAULT_FALSE))
-                .flatMap(e -> repository.delete(e));
+                .flatMap(e -> repository.save(e)).then()
+                .onErrorResume(e -> Mono.error(customException(HttpStatus.INTERNAL_SERVER_ERROR,
+                        HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase())));
     }
 
     /**
@@ -108,8 +116,9 @@ public class AccountServiceImpl implements AccountService {
         return repository.findById(request.getId_account())
                 .map(entity -> updateAccount.apply(request, entity))
                 .flatMap(account -> repository.save(account))
-                .flatMap(aupdated -> Mono.just(buildAccountR.apply(aupdated)))
-                .onErrorReturn(new AccountResponse());
+                .flatMap(updated -> Mono.just(buildAccountR.apply(updated)))
+                .onErrorResume(e -> Mono.error(customException(HttpStatus.BAD_REQUEST,
+                        HttpStatus.BAD_REQUEST.getReasonPhrase())));
     }
 
     /**
@@ -156,4 +165,15 @@ public class AccountServiceImpl implements AccountService {
         response.setStatus(entity.isStatus());
         return response;
     };
+
+    /**
+     * Method CUSTOM exception.
+     *
+     * @param status  {@link HttpStatus}
+     * @param message {@link String}
+     * @return {@link ResponseStatusException}
+     */
+    private ResponseStatusException customException(HttpStatus status, String message) {
+        return new ResponseStatusException(status, message);
+    }
 }
